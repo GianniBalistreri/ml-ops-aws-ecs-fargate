@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "happy-learning"
+version = "0.1.0"
+description = "Install happy-learning dependencies"
+authors = ["gianni <gbalistreri762@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+happy_learning = "^0.4.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

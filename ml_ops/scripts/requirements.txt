@@ -1,1 +1,1 @@
-happy-learning==0.4.3
+happy_learning==0.4.3

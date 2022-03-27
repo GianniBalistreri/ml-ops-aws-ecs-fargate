@@ -9,8 +9,8 @@ resource "aws_sagemaker_code_repository" "git_repo" {
 # Defining the SageMaker notebook lifecycle configuration
 resource "aws_sagemaker_notebook_instance_lifecycle_configuration" "notebook_config" {
   name = var.sagemaker_notebook_lifecycle_config
-  on_create = filebase64("../scripts/aws_sagemaker_notebook_setup_idle_auto_stop.sh")
-  on_start = filebase64("../scripts/aws_sagemaker_notebook_setup_custom_kernel.sh")
+  on_create = filebase64("../scripts/aws_sagemaker_notebook_on_create.sh")
+  #on_start = filebase64("../scripts/aws_sagemaker_notebook_on_start.sh")
 }
 
 # Creating the SageMaker notebook instance

@@ -1,6 +1,12 @@
 # Misc
 .DS_Store
 
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
