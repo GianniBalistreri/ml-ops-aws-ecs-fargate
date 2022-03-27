@@ -52,7 +52,7 @@ wget https://raw.githubusercontent.com/GianniBalistreri/d-day/master/ml_ops/scri
 # Installing the Python libraries listed in the requirements.txt script
 echo "Installing requirements ..."
 pip install --quiet poetry
-poetry add fast_gsdmm
-pip install --quiet -r requirements.txt
+poetry install
+#pip install --quiet -r requirements.txt
 EOF
 echo "Starting sagemaker jupyter notebook ..."
