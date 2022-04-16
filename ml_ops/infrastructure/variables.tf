@@ -88,11 +88,11 @@ variable "ecs_task_role_name" {
   default     = "ml-ops-task"
 }
 
-variable "ecs_task_execution_role_name" {
-  description = "Name of the elastic container service execution role"
-  type        = string
-  default     = "ml-ops"
-}
+#variable "ecs_task_execution_role_name" {
+#  description = "Name of the elastic container service execution role"
+#  type        = string
+#  default     = "ml-ops"
+#}
 
 variable "ecs_container_definitions_name" {
   description = "Name of the elastic container service container definitions"
@@ -181,7 +181,7 @@ variable "s3_tags" {
 variable "s3_force_destroy" {
   description = "Allow the object to be deleted by removing any legal hold on any object version. Default is false. This value should be set to true only if the bucket has S3 object lock enabled"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "s3_versioning_enabled" {
@@ -196,48 +196,179 @@ variable "s3_versioning_mfa_delete" {
   default     = false
 }
 
-##################
-# AWS Sagemaker: #
-##################
 
-variable "git_repo_name" {
-  description = "Name of the git repository"
+
+
+variable "aws_alb_name" {
+  description = "Name of the load balancer"
   type        = string
-  default     = "d-day"
+  default     = "ml-ops-load-balancer"
 }
 
-variable "git_repo_url" {
-  description = "URL of the git repository"
+variable "aws_alb_target_group_name" {
+  description = "Name of the load balancer target group"
   type        = string
-  default     = "https://github.com/GianniBalistreri/d-day.git"
+  default     = "ml-ops-target-group"
 }
 
-variable "sagemaker_notebook_instance_name" {
-  description = "Name of the sagemaker notebook"
+variable "aws_ecs_task_definition_name" {
+  description = "Name of the elastic container service task definition"
   type        = string
-  default     = "exploration"
+  default     = "ml-ops-task"
 }
 
-variable "sagemaker_notebook_instance_type" {
-  description = "Name of the underlying ec2 instance"
+variable "aws_ecs_task_definition_container_definition_name" {
+  description = "Name of the elastic container service task definition container definition"
   type        = string
-  default     = "ml.t2.medium"
+  default     = "ml"
 }
 
-variable "sagemaker_notebook_lifecycle_config" {
-  description = "Name of the sagemaker notebook lifecycle configuration"
+variable "aws_ecs_service_name" {
+  description = "Name of the elastic container service"
   type        = string
-  default     = "ml-ops-sagemaker-lifecycle-config"
+  default     = "ml-ops-service"
 }
 
-variable "sagemaker_notebook_iam_role_name" {
-  description = "Name of the sagemaker notebook iam role"
-  type        = string
-  default     = "sagemaker-notebook-role"
+variable "aws_vpc_cidr" {
+  description = "The CIDR of the main vpc"
+  default     = "172.17.0.0/16"
 }
 
-variable "sagemaker_notebook_iam_policy_name" {
-  description = "Name of the sagemaker notebook iam policy"
+variable "remote_cidr_blocks" {
+  type        = list(any)
+  default     = ["10.0.0.0/32"]
+  description = "By default cidr_blocks are locked down. (Update to 0.0.0.0/0 if full public access is needed)"
+}
+
+variable "vpc_id" {
+  description = "ECS VPC ID"
   type        = string
-  default     = "sagemaker-full-access-attachment"
+  default     = "vpc"
+}
+
+variable "ecs_task_execution_role_name" {
+  description = "ECS task execution role name"
+  type        = string
+  default     = "myEcsTaskExecutionRole"
+}
+
+variable "az_count" {
+  description = "Number of AZs to cover in a given region"
+  type        = string
+  default     = "2"
+}
+
+variable "training_container_image" {
+  description = "Docker image to run in the ECS cluster to train ml model"
+  type        = string
+  default     = "training:latest"
+}
+
+variable "inference_container_image" {
+  description = "Docker image to run in the ECS cluster to generate inferences from pre-trained ml model"
+  type        = string
+  default     = "inference:latest"
+}
+
+variable "ml_ops_port" {
+  description = "Port exposed by the docker image to redirect traffic to"
+  type        = number
+  default     = 80
+}
+
+variable "container_count" {
+  description = "Number of docker containers to run"
+  type        = string
+  default     = "3"
+}
+
+variable "health_check_path" {
+  default = "/"
+}
+
+variable "fargate_cpu" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  type        = number
+  default     = 256
+}
+
+variable "fargate_memory" {
+  description = "Fargate instance memory to provision (in MiB)"
+  type        = number
+  default     = 512
+}
+
+
+
+
+variable "name" {
+  description = "Name given resources"
+  type        = string
+  default     = "aws-ia"
+}
+
+variable "service_name" {
+  type        = string
+  default     = "nginx"
+  description = "A name for the service"
+}
+
+variable "image_url" {
+  type        = string
+  default     = "nginx"
+  description = "the url of a docker image that contains the application process that will handle the traffic for this service"
+}
+
+variable "container_port" {
+  type        = number
+  default     = 80
+  description = "What port number the application inside the docker container is binding to"
+}
+
+variable "container_cpu" {
+  type        = number
+  default     = 50
+  description = "How much CPU to give the container. 1024 is 1 CPU"
+}
+
+variable "container_memory" {
+  type        = number
+  default     = 512
+  description = "How much memory in megabytes to give the container"
+}
+
+variable "lb_public_access" {
+  type        = bool
+  default     = true
+  description = "Make LB accessible publicly"
+}
+
+variable "lb_path" {
+  type        = string
+  default     = "*"
+  description = "A path on the public load balancer that this service should be connected to. Use * to send all load balancer traffic to this service."
+}
+
+variable "routing_priority" {
+  type        = number
+  default     = 1
+  description = "The priority for the routing rule added to the load balancer. This only applies if your have multiple services which have been assigned to different paths on the load balancer."
+}
+
+variable "desired_count" {
+  type        = number
+  default     = 2
+  description = "How many copies of the service task to run"
+}
+
+variable "name_prefix" {
+  description = "Name Prefix"
+  type        = string
+  default     = "fw"
+}
+
+variable "network_tag" {
+  description = "Tags used to filter ecs subnets "
+  type        = string
+  default     = "ecs-subnets"
 }

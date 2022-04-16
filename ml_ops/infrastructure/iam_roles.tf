@@ -70,78 +70,50 @@ data "aws_iam_policy_document" "s3" {
 # AWS ECS IAM Role: #
 #####################
 
-resource "aws_iam_role" "ecs_task_execution_role" {
-  name = var.ecs_task_execution_role_name
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-}
-
-resource "aws_iam_role" "ecs_task_role" {
-  name = var.ecs_task_role_name
-  assume_role_policy = <<EOF
-{
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Action": "sts:AssumeRole",
-     "Principal": {
-       "Service": "ecs-tasks.amazonaws.com"
-     },
-     "Effect": "Allow",
-     "Sid": ""
-   }
- ]
-}
-EOF
-}
- 
-resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {
-  role       = aws_iam_role.ecs_task_execution_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-resource "aws_iam_role_policy_attachment" "task_s3" {
-  role       = "${aws_iam_role.ecs_task_role.name}"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-}
-
-###########################
-# AWS Sagemaker IAM Role: #
-###########################
-
-# Defining the SageMaker "Assume Role" policy
-data "aws_iam_policy_document" "sm_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRole"]
-    principals {
-      type = "Service"
-      identifiers = ["sagemaker.amazonaws.com"]
-    }
-  }
-}
-
-# Defining the SageMaker notebook IAM role
-resource "aws_iam_role" "notebook_iam_role" {
-  name = var.sagemaker_notebook_iam_role_name
-  assume_role_policy = data.aws_iam_policy_document.sm_assume_role_policy.json
-}
-
-# Attaching the AWS default policy, "AmazonSageMakerFullAccess"
-resource "aws_iam_policy_attachment" "sm_full_access_attach" {
-  name = var.sagemaker_notebook_iam_policy_name
-  roles = [aws_iam_role.notebook_iam_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSageMakerFullAccess"
-}
+#resource "aws_iam_role" "ecs_task_execution_role" {
+#  name = var.ecs_task_execution_role_name
+#  assume_role_policy = jsonencode({
+#    Version = "2012-10-17"
+#    Statement = [
+#      {
+#        Action = "sts:AssumeRole"
+#        Effect = "Allow"
+#        Principal = {
+#          Service = "ecs-tasks.amazonaws.com"
+#        }
+#      },
+#    ]
+#  })
+#  tags = {
+#    Environment = "aws-ia-fargate"
+#  }
+#}
+#
+#resource "aws_iam_role" "ecs_task_role" {
+#  name = var.ecs_task_role_name
+#  assume_role_policy = <<EOF
+#{
+# "Version": "2012-10-17",
+# "Statement": [
+#   {
+#     "Action": "sts:AssumeRole",
+#     "Principal": {
+#       "Service": "ecs-tasks.amazonaws.com"
+#     },
+#     "Effect": "Allow",
+#     "Sid": ""
+#   }
+# ]
+#}
+#EOF
+#}
+# 
+#resource "aws_iam_role_policy_attachment" "ecs-task-execution-role-policy-attachment" {
+#  role       = aws_iam_role.ecs_task_execution_role.name
+#  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+#}
+#
+#resource "aws_iam_role_policy_attachment" "task_s3" {
+#  role       = "${aws_iam_role.ecs_task_role.name}"
+#  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+#}
