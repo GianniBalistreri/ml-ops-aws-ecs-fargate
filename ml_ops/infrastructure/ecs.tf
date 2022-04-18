@@ -22,20 +22,20 @@ resource "aws_alb_target_group" "ml" {
 }
 
 # Redirect all traffic from the ALB to the target group
-#resource "aws_alb_listener" "front_end" {
-#  load_balancer_arn = aws_alb.main.id
-#  port              = var.app_port
-#  protocol          = "HTTP"
-#
-#  default_action {
-#    target_group_arn = aws_alb_target_group.app.id
-#    type             = "forward"
-#  }
-#}
+resource "aws_alb_listener" "front_end" {
+  load_balancer_arn = aws_alb.main.id
+  port              = var.ml_ops_port
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = aws_alb_target_group.ml.id
+    type             = "forward"
+  }
+}
 
 
 resource "aws_ecs_cluster" "ecs_fargate" {
-  name = var.ecs_cluster_name
+  name       = var.ecs_cluster_name
   depends_on = [aws_ecr_repository.ecr]
 }
 
@@ -47,28 +47,28 @@ resource "aws_ecs_task_definition" "ml" {
   cpu                      = var.fargate_cpu
   memory                   = var.fargate_memory
   container_definitions = jsonencode([
-  {
-    "name": var.aws_ecs_task_definition_container_definition_name,
-    "image": var.training_container_image,
-    "cpu": var.fargate_cpu,
-    "memory": var.fargate_memory,
-    "networkMode": "awsvpc",
-    "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/${var.aws_ecs_task_definition_container_definition_name}",
-          "awslogs-region": var.aws_region,
-          "awslogs-stream-prefix": "ecs"
+    {
+      "name" : var.aws_ecs_task_definition_container_definition_name,
+      "image" : var.training_container_image,
+      "cpu" : var.fargate_cpu,
+      "memory" : var.fargate_memory,
+      "networkMode" : "awsvpc",
+      "logConfiguration" : {
+        "logDriver" : "awslogs",
+        "options" : {
+          "awslogs-group" : "/ecs/${var.aws_ecs_task_definition_container_definition_name}",
+          "awslogs-region" : var.aws_region,
+          "awslogs-stream-prefix" : "ecs"
         }
-    },
-    "portMappings": [
-      {
-        "containerPort": var.ml_ops_port,
-        "hostPort": var.ml_ops_port
-      }
-    ]
-  }
-])
+      },
+      "portMappings" : [
+        {
+          "containerPort" : var.ml_ops_port,
+          "hostPort" : var.ml_ops_port
+        }
+      ]
+    }
+  ])
 }
 
 resource "aws_ecs_service" "main" {
@@ -88,9 +88,9 @@ resource "aws_ecs_service" "main" {
     container_port   = var.ml_ops_port
   }
   depends_on = [
-    #aws_alb_listener.front_end,
+    aws_alb_listener.front_end,
     aws_iam_role_policy_attachment.ecs_task_execution_role
-    ]
+  ]
 }
 
 # ECS task execution role
