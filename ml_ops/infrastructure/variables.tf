@@ -43,7 +43,7 @@ variable "ecr_scan_on_push" {
 variable "ecs_cluster_name" {
   description = "Name of the elastic cluster service cluster"
   type        = string
-  default     = "ml-ops"
+  default     = "ml"#"ml-ops"
 }
 
 variable "ecs_vpc_cidr_block" {
@@ -61,7 +61,7 @@ variable "ecs_enable_dns_hostnames" {
 variable "ecs_task_definition_name" {
   description = "Name of the elastic container service task definition"
   type        = string
-  default     = "ml-ops-task-definition"
+  default     = "ml-task-definition"#"ml-ops-task-definition"
 }
 
 variable "ecs_task_definition_network_mode" {
@@ -85,7 +85,7 @@ variable "ecs_task_definition_memory" {
 variable "ecs_task_role_name" {
   description = "Name of the elastic container service role"
   type        = string
-  default     = "ml-ops-task"
+  default     = "ml-task"#"ml-ops-task"
 }
 
 #variable "ecs_task_execution_role_name" {
@@ -97,13 +97,13 @@ variable "ecs_task_role_name" {
 variable "ecs_container_definitions_name" {
   description = "Name of the elastic container service container definitions"
   type        = string
-  default     = "ml-ops-container"
+  default     = "ml-container"#"ml-ops-container"
 }
 
 variable "ecs_container_definitions_awslogs_stream_prefix" {
   description = "Name of the elastic container service container definitions aws logs stream prefix"
   type        = string
-  default     = "ml-ops"
+  default     = "ml"#"ml-ops"
 }
 
 ##################
@@ -117,15 +117,9 @@ variable "s3_create" {
 }
 
 variable "s3_bucket_name_infrastructure" {
-  description = "Name of the infrastructure bucket"
-  type        = string
-  default     = "gfb-ml-ops-infrastructure"
-}
-
-variable "s3_bucket_name_infrastructure_tf_state" {
   description = "Name of the terraform backend folder"
   type        = string
-  default     = "terraform"
+  default     = "gfb-ml-ops-tf-infrastructure"
 }
 
 variable "s3_bucket_name_infrastructure_ecs_container_definitions_env" {
@@ -202,31 +196,31 @@ variable "s3_versioning_mfa_delete" {
 variable "aws_alb_name" {
   description = "Name of the load balancer"
   type        = string
-  default     = "ml-ops-load-balancer"
+  default     = "ml-load-balancer"#"ml-ops-load-balancer"
 }
 
 variable "aws_alb_target_group_name" {
   description = "Name of the load balancer target group"
   type        = string
-  default     = "ml-ops-target-group"
+  default     = "ml-target-group"#"ml-ops-target-group"
 }
 
 variable "aws_ecs_task_definition_name" {
   description = "Name of the elastic container service task definition"
   type        = string
-  default     = "ml-ops-task"
+  default     = "ml-task"#"ml-ops-task"
 }
 
 variable "aws_ecs_task_definition_container_definition_name" {
   description = "Name of the elastic container service task definition container definition"
   type        = string
-  default     = "ml"
+  default     = "ml"#"ml-ops"
 }
 
 variable "aws_ecs_service_name" {
   description = "Name of the elastic container service"
   type        = string
-  default     = "ml-ops-service"
+  default     = "ml"#"ml-service"#"ml-ops-service"
 }
 
 variable "aws_vpc_cidr" {
