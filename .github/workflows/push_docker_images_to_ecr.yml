@@ -36,7 +36,7 @@ jobs:
         ECR_REPOSITORY: ml
         IMAGE_TAG: training
       run: |
-        docker build ./ml_ops/src/training/ --file Dockerfile -t training .
+        docker build --file ./ml_ops/src/training/Dockerfile -t training .
         docker tag training:latest $AWS_ACCOUNT_ID.dkr.ecr.eu-cental-1.amazonaws.com/training:latest
         docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/training:latest
     - name: Build, tag, and push image for generating inference from pre-trained ml model to Amazon ECR
@@ -46,6 +46,6 @@ jobs:
         ECR_REPOSITORY: ml
         IMAGE_TAG: infernce
       run: |
-        docker build ./ml_ops/src/inference/ --file Dockerfile -t inference .
+        docker build --file ./ml_ops/src/inference/Dockerfile -t inference .
         docker tag inference:latest $AWS_ACCOUNT_ID.dkr.ecr.eu-cental-1.amazonaws.com/inference:latest
         docker push $AWS_ACCOUNT_ID.dkr.ecr.eu-central-1.amazonaws.com/inference:latest
