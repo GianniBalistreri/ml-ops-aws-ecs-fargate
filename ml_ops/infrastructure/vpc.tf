@@ -2,8 +2,8 @@
 # AWS ECS: #
 ############
 
-resource "aws_vpc" "ecs_vpc" { 
-  cidr_block = var.ecs_vpc_cidr_block
+resource "aws_vpc" "ecs_vpc" {
+  cidr_block           = var.ecs_vpc_cidr_block
   enable_dns_hostnames = var.ecs_enable_dns_hostnames
 }
 
@@ -13,8 +13,8 @@ resource "aws_vpc" "main" {
 
 # Create var.az_count private subnets, each in a different AZ
 resource "aws_subnet" "private" {
-  count             = var.az_count
-  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
+  count      = var.az_count
+  cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
   #cidr_block        = var.aws_subnet_private_cidr
   availability_zone = data.aws_availability_zones.available.names[count.index]
   vpc_id            = aws_vpc.main.id
@@ -22,8 +22,8 @@ resource "aws_subnet" "private" {
 
 # Create var.az_count public subnets, each in a different AZ
 resource "aws_subnet" "public" {
-  count                   = var.az_count
-  cidr_block              = cidrsubnet(aws_vpc.main.cidr_block, 8, var.az_count + count.index)
+  count      = var.az_count
+  cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 8, var.az_count + count.index)
   #cidr_block              = var.aws_subnet_public_cidr
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   vpc_id                  = aws_vpc.main.id
@@ -112,7 +112,7 @@ resource "aws_security_group" "ecs_tasks" {
 
 # Network ACL to restrict traffic to private subnets
 resource "aws_network_acl" "private" {
-  vpc_id = aws_vpc.main.id
+  vpc_id     = aws_vpc.main.id
   subnet_ids = aws_subnet.private.*.id
   egress {
     protocol   = "tcp"
@@ -171,7 +171,7 @@ resource "aws_network_acl" "private" {
 
 # Network ACL to restrict traffic to public subnets
 resource "aws_network_acl" "public" {
-  vpc_id = aws_vpc.main.id
+  vpc_id     = aws_vpc.main.id
   subnet_ids = aws_subnet.public.*.id
   egress {
     protocol   = "-1"
