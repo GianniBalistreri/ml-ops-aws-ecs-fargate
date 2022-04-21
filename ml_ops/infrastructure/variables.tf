@@ -43,7 +43,7 @@ variable "ecr_scan_on_push" {
 variable "ecs_cluster_name" {
   description = "Name of the elastic cluster service cluster"
   type        = string
-  default     = "ml" #"ml-ops"
+  default     = "ml"
 }
 
 variable "ecs_vpc_cidr_block" {
@@ -61,7 +61,7 @@ variable "ecs_enable_dns_hostnames" {
 variable "ecs_task_definition_name" {
   description = "Name of the elastic container service task definition"
   type        = string
-  default     = "ml-task-definition" #"ml-ops-task-definition"
+  default     = "ml-task-definition"
 }
 
 variable "ecs_task_definition_network_mode" {
@@ -79,31 +79,214 @@ variable "ecs_task_definition_cpu" {
 variable "ecs_task_definition_memory" {
   description = "Amount of memory of the elastic container service task definition"
   type        = string
-  default     = "1024"
+  default     = "64"
 }
 
 variable "ecs_task_role_name" {
   description = "Name of the elastic container service role"
   type        = string
-  default     = "ml-task" #"ml-ops-task"
+  default     = "ml-task"
 }
 
 #variable "ecs_task_execution_role_name" {
 #  description = "Name of the elastic container service execution role"
 #  type        = string
-#  default     = "ml-ops"
+#  default     = "ml"
 #}
 
 variable "ecs_container_definitions_name" {
   description = "Name of the elastic container service container definitions"
   type        = string
-  default     = "ml-container" #"ml-ops-container"
+  default     = "ml-container"
 }
 
 variable "ecs_container_definitions_awslogs_stream_prefix" {
   description = "Name of the elastic container service container definitions aws logs stream prefix"
   type        = string
-  default     = "ml" #"ml-ops"
+  default     = "ml"
+}
+
+variable "aws_alb_name" {
+  description = "Name of the load balancer"
+  type        = string
+  default     = "ml-load-balancer"
+}
+
+variable "aws_alb_target_group_name" {
+  description = "Name of the load balancer target group"
+  type        = string
+  default     = "ml-target-group"
+}
+
+variable "aws_ecs_task_definition_name" {
+  description = "Name of the elastic container service task definition"
+  type        = string
+  default     = "ml-task"
+}
+
+variable "aws_ecs_task_definition_container_definition_name" {
+  description = "Name of the elastic container service task definition container definition"
+  type        = string
+  default     = "ml"
+}
+
+variable "aws_ecs_service_name" {
+  description = "Name of the elastic container service"
+  type        = string
+  default     = "ml"
+}
+
+variable "aws_vpc_cidr" {
+  description = "The CIDR of the main vpc"
+  default     = "172.17.0.0/16"
+}
+
+variable "remote_cidr_blocks" {
+  type        = list(any)
+  default     = ["10.0.0.0/32"]
+  description = "By default cidr_blocks are locked down. (Update to 0.0.0.0/0 if full public access is needed)"
+}
+
+variable "vpc_id" {
+  description = "ECS VPC ID"
+  type        = string
+  default     = "vpc"
+}
+
+variable "ecs_task_execution_role_name" {
+  description = "ECS task execution role name"
+  type        = string
+  default     = "myEcsTaskExecutionRole"
+}
+
+variable "az_count" {
+  description = "Number of AZs to cover in a given region"
+  type        = string
+  default     = "2"
+}
+
+variable "training_container_image" {
+  description = "Docker image to run in the ECS cluster to train ml model"
+  type        = string
+  default     = "training:latest"
+}
+
+variable "inference_container_image" {
+  description = "Docker image to run in the ECS cluster to generate inferences from pre-trained ml model"
+  type        = string
+  default     = "inference:latest"
+}
+
+variable "ml_ops_port" {
+  description = "Port exposed by the docker image to redirect traffic to"
+  type        = number
+  default     = 80
+}
+
+variable "container_count" {
+  description = "Number of docker containers to run"
+  type        = string
+  default     = "3"
+}
+
+variable "health_check_path" {
+  default = "/"
+}
+
+variable "fargate_cpu" {
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
+  type        = number
+  default     = 256
+}
+
+variable "fargate_memory" {
+  description = "Fargate instance memory to provision (in MiB)"
+  type        = number
+  default     = 512
+}
+
+variable "name" {
+  description = "Name given resources"
+  type        = string
+  default     = "aws-ia"
+}
+
+variable "service_name" {
+  type        = string
+  default     = "nginx"
+  description = "A name for the service"
+}
+
+variable "image_url" {
+  type        = string
+  default     = "nginx"
+  description = "the url of a docker image that contains the application process that will handle the traffic for this service"
+}
+
+variable "container_port" {
+  type        = number
+  default     = 80
+  description = "What port number the application inside the docker container is binding to"
+}
+
+variable "container_cpu" {
+  type        = number
+  default     = 2
+  description = "How much CPU to give the container. 1024 is 1 CPU"
+}
+
+variable "container_memory" {
+  type        = number
+  default     = 64
+  description = "How much memory in megabytes to give the container"
+}
+
+variable "lb_public_access" {
+  type        = bool
+  default     = true
+  description = "Make LB accessible publicly"
+}
+
+variable "lb_path" {
+  type        = string
+  default     = "*"
+  description = "A path on the public load balancer that this service should be connected to. Use * to send all load balancer traffic to this service."
+}
+
+variable "routing_priority" {
+  type        = number
+  default     = 1
+  description = "The priority for the routing rule added to the load balancer. This only applies if your have multiple services which have been assigned to different paths on the load balancer."
+}
+
+variable "desired_count" {
+  type        = number
+  default     = 2
+  description = "How many copies of the service task to run"
+}
+
+variable "name_prefix" {
+  description = "Name Prefix"
+  type        = string
+  default     = "fw"
+}
+
+variable "network_tag" {
+  description = "Tags used to filter ecs subnets "
+  type        = string
+  default     = "ecs-subnets"
+}
+
+variable "autoscaling_min_capacity" {
+  description = "Minimum number of cluster EC2 instances"
+  type        = number
+  default     = 1
+}
+
+variable "autoscaling_max_capacity" {
+  description = "Maximum number of cluster EC2 instances"
+  type        = number
+  default     = 4
 }
 
 ##################
@@ -188,181 +371,4 @@ variable "s3_versioning_mfa_delete" {
   description = "Delete multi factor authentification or not"
   type        = bool
   default     = false
-}
-
-
-
-
-variable "aws_alb_name" {
-  description = "Name of the load balancer"
-  type        = string
-  default     = "ml-load-balancer" #"ml-ops-load-balancer"
-}
-
-variable "aws_alb_target_group_name" {
-  description = "Name of the load balancer target group"
-  type        = string
-  default     = "ml-target-group" #"ml-ops-target-group"
-}
-
-variable "aws_ecs_task_definition_name" {
-  description = "Name of the elastic container service task definition"
-  type        = string
-  default     = "ml-task" #"ml-ops-task"
-}
-
-variable "aws_ecs_task_definition_container_definition_name" {
-  description = "Name of the elastic container service task definition container definition"
-  type        = string
-  default     = "ml" #"ml-ops"
-}
-
-variable "aws_ecs_service_name" {
-  description = "Name of the elastic container service"
-  type        = string
-  default     = "ml" #"ml-service"#"ml-ops-service"
-}
-
-variable "aws_vpc_cidr" {
-  description = "The CIDR of the main vpc"
-  default     = "172.17.0.0/16"
-}
-
-variable "remote_cidr_blocks" {
-  type        = list(any)
-  default     = ["10.0.0.0/32"]
-  description = "By default cidr_blocks are locked down. (Update to 0.0.0.0/0 if full public access is needed)"
-}
-
-variable "vpc_id" {
-  description = "ECS VPC ID"
-  type        = string
-  default     = "vpc"
-}
-
-variable "ecs_task_execution_role_name" {
-  description = "ECS task execution role name"
-  type        = string
-  default     = "myEcsTaskExecutionRole"
-}
-
-variable "az_count" {
-  description = "Number of AZs to cover in a given region"
-  type        = string
-  default     = "2"
-}
-
-variable "training_container_image" {
-  description = "Docker image to run in the ECS cluster to train ml model"
-  type        = string
-  default     = "training:latest"
-}
-
-variable "inference_container_image" {
-  description = "Docker image to run in the ECS cluster to generate inferences from pre-trained ml model"
-  type        = string
-  default     = "inference:latest"
-}
-
-variable "ml_ops_port" {
-  description = "Port exposed by the docker image to redirect traffic to"
-  type        = number
-  default     = 80
-}
-
-variable "container_count" {
-  description = "Number of docker containers to run"
-  type        = string
-  default     = "3"
-}
-
-variable "health_check_path" {
-  default = "/"
-}
-
-variable "fargate_cpu" {
-  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units)"
-  type        = number
-  default     = 256
-}
-
-variable "fargate_memory" {
-  description = "Fargate instance memory to provision (in MiB)"
-  type        = number
-  default     = 512
-}
-
-
-
-
-variable "name" {
-  description = "Name given resources"
-  type        = string
-  default     = "aws-ia"
-}
-
-variable "service_name" {
-  type        = string
-  default     = "nginx"
-  description = "A name for the service"
-}
-
-variable "image_url" {
-  type        = string
-  default     = "nginx"
-  description = "the url of a docker image that contains the application process that will handle the traffic for this service"
-}
-
-variable "container_port" {
-  type        = number
-  default     = 80
-  description = "What port number the application inside the docker container is binding to"
-}
-
-variable "container_cpu" {
-  type        = number
-  default     = 50
-  description = "How much CPU to give the container. 1024 is 1 CPU"
-}
-
-variable "container_memory" {
-  type        = number
-  default     = 512
-  description = "How much memory in megabytes to give the container"
-}
-
-variable "lb_public_access" {
-  type        = bool
-  default     = true
-  description = "Make LB accessible publicly"
-}
-
-variable "lb_path" {
-  type        = string
-  default     = "*"
-  description = "A path on the public load balancer that this service should be connected to. Use * to send all load balancer traffic to this service."
-}
-
-variable "routing_priority" {
-  type        = number
-  default     = 1
-  description = "The priority for the routing rule added to the load balancer. This only applies if your have multiple services which have been assigned to different paths on the load balancer."
-}
-
-variable "desired_count" {
-  type        = number
-  default     = 2
-  description = "How many copies of the service task to run"
-}
-
-variable "name_prefix" {
-  description = "Name Prefix"
-  type        = string
-  default     = "fw"
-}
-
-variable "network_tag" {
-  description = "Tags used to filter ecs subnets "
-  type        = string
-  default     = "ecs-subnets"
 }
