@@ -31,7 +31,7 @@ jobs:
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: arn:aws:iam::086726293497:role/Github-Action
-        role-duration-seconds: 500
+        role-duration-seconds: 1000
         aws-region: eu-central-1
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
