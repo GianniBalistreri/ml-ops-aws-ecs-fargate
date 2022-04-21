@@ -33,7 +33,6 @@ resource "aws_alb_listener" "front_end" {
   }
 }
 
-
 resource "aws_ecs_cluster" "ecs_fargate" {
   name       = var.ecs_cluster_name
   depends_on = [aws_ecr_repository.ecr]
@@ -90,5 +89,17 @@ resource "aws_ecs_service" "main" {
   depends_on = [
     aws_alb_listener.front_end,
     aws_iam_role_policy_attachment.ecs_task_execution_role
+  ]
+}
+
+resource "aws_appautoscaling_target" "ecs_autoscaling_target" {
+  max_capacity       = var.autoscaling_max_capacity
+  min_capacity       = var.autoscaling_min_capacity
+  resource_id        = "service/${aws_ecs_cluster.ecs_fargate.name}/${aws_ecs_service.main.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+  depends_on = [
+    aws_ecs_cluster.ecs_fargate,
+    aws_ecs_service.main
   ]
 }
