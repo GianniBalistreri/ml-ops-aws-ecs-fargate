@@ -17,6 +17,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ./ml_ops/infrastructure
 
     steps:
     # Checkout the repository to the GitHub Actions runner
