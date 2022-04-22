@@ -21,7 +21,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./ml_ops/infrastructure
+        working-directory: ./ml_ops
 
     steps:
 
