@@ -48,7 +48,7 @@ jobs:
       run: |
         docker build --file ./ml_ops/src/training/Dockerfile -t training .
         docker tag training:latest 086726293497.dkr.ecr.eu-cental-1.amazonaws.com/training:latest
-        docker push 086726293497.dkr.ecr.eu-central-1.amazonaws.com/training:latest
+        docker push training:latest
     - name: Build, tag, and push image for generating inference from pre-trained ml model to Amazon ECR
       id: inference
       env:
@@ -58,4 +58,4 @@ jobs:
       run: |
         docker build --file ./ml_ops/src/inference/Dockerfile -t inference .
         docker tag inference:latest 086726293497.dkr.ecr.eu-cental-1.amazonaws.com/inference:latest
-        docker push 086726293497.dkr.ecr.eu-central-1.amazonaws.com/inference:latest
+        docker push inference:latest
