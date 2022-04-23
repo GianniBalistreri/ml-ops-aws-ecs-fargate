@@ -53,9 +53,13 @@ def inference() -> Tuple[dict, int]:
     """
     Generate inference from pre-trained model using request data
     """
-    _processor: dict = DataImporter(file_path=os.path.join(S3_MODEL_BUCKET, PREPROCESSING_FILE_NAME), as_data_frame=False).file()
+    _processor_file_path: str = os.path.join(S3_MODEL_BUCKET, PREPROCESSING_FILE_NAME)
+    print(f'Load processor file from S3 bucket ({_processor_file_path}) ...')
+    _processor: dict = DataImporter(file_path=_processor_file_path, as_data_frame=False).file()
     _raw_data: dict = request.get_json(force=True)
+    print('Start pre-processing ...')
     _df = pre_processing(df=pd.DataFrame(data=_raw_data, index=[0]), preprocessing_template=_processor)
+    print('Generate prediction ...')
     _prediction = MODEL.predict(_df[_processor.get('predictors')].values)
     _response: dict = dict(predictions=_prediction)
     return _response, 200
@@ -65,12 +69,18 @@ def inference() -> int:
     """
     Generate inference from pre-trained model using data set from s3 bucket
     """
-    _processor: dict = DataImporter(file_path=os.path.join(S3_MODEL_BUCKET, PREPROCESSING_FILE_NAME), as_data_frame=False).file()
+    _processor_file_path: str = os.path.join(S3_MODEL_BUCKET, PREPROCESSING_FILE_NAME)
+    print(f'Load processor file from S3 bucket ({_processor_file_path})')
+    _processor: dict = DataImporter(file_path=_processor_file_path, as_data_frame=False).file()
     _df_raw: pd.DataFrame = DataImporter(file_path=os.path.join(S3_INPUT_BUCKET, INPUT_FILE_NAME), use_dask=False, sep=',').file()
+    print('Start pre-processing ...')
     _df = pre_processing(df=_df_raw, preprocessing_template=_processor)
+    print('Generate prediction ...')
     _predictions = MODEL.predict(_df[_processor.get('predictors')].values)
     _df['prediction'] = _predictions
-    DataExporter(obj=_df, file_path=os.path.join(S3_OUTPUT_BUCKET, OUTPUT_FILE_NAME), sep=',', cloud='aws').file()
+    _prediction_file_path: str = os.path.join(S3_OUTPUT_BUCKET, OUTPUT_FILE_NAME)
+    print(f'Save prediction to S3 bucket ({_prediction_file_path}) ...')
+    DataExporter(obj=_df, file_path=_prediction_file_path, sep=',', cloud='aws').file()
     return 200
 
 if __name__ == '__main__':
