@@ -6,6 +6,7 @@ authors = ["gianni <gbalistreri762@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
+s3fs = "^0.4.0"
 happy_learning = "^0.4.4"
 
 [tool.poetry.dev-dependencies]
