@@ -31,8 +31,8 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: arn:aws:iam::086726293497:role/Github-Action
-        role-duration-seconds: 1000
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+        role-duration-seconds: 1800
         aws-region: eu-central-1
 
     - name: Login to Amazon ECR
@@ -41,4 +41,4 @@ jobs:
 
     - name: Run docker container to start inference service for generating predictions from pre-trained machine learning mdoel
       id: start_inference_service
-      run: docker run 086726293497.dkr.ecr.eu-central-1.amazonaws.com/inference:latest
+      run: docker run  -e AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-central-1.amazonaws.com/inference:latest
