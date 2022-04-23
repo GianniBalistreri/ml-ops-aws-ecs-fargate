@@ -18,10 +18,16 @@ variable "env" {
 # AWS ECR: #
 ############
 
-variable "ecr_name" {
-  description = "Name of the elastic container registry"
+variable "ecr_name_training" {
+  description = "Name of the elastic container registry for training image"
   type        = string
-  default     = "ml-ops"
+  default     = "training"
+}
+
+variable "ecr_name_inference" {
+  description = "Name of the elastic container registry for inference image"
+  type        = string
+  default     = "inference"
 }
 
 variable "ecr_image_tag_mutability" {

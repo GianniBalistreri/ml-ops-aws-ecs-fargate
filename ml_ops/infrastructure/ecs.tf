@@ -34,8 +34,11 @@ resource "aws_alb_listener" "front_end" {
 }
 
 resource "aws_ecs_cluster" "ecs_fargate" {
-  name       = var.ecs_cluster_name
-  depends_on = [aws_ecr_repository.ecr]
+  name = var.ecs_cluster_name
+  depends_on = [
+    aws_ecr_repository.training,
+    aws_ecr_repository.inference
+  ]
 }
 
 resource "aws_ecs_task_definition" "ml" {
