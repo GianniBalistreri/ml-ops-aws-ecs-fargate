@@ -37,4 +37,4 @@ jobs:
 
     - name: Run docker container to start inference service for generating predictions from pre-trained machine learning mdoel
       id: start_inference_service
-      run: docker run inference
+      run: docker run 086726293497.dkr.ecr.eu-central-1.amazonaws.com/inference:latest

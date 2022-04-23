@@ -37,4 +37,4 @@ jobs:
 
     - name: Run docker container to start training of a machine learning model
       id: start_training
-      run: docker run training
+      run: docker run 086726293497.dkr.ecr.eu-central-1.amazonaws.com/training:latest
