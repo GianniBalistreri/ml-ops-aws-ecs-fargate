@@ -26,6 +26,7 @@ def main():
     _input_file_path: str = os.path.join(S3_INPUT_BUCKET, TRAINING_FILE_NAME)
     print(f'Load data set from S3 bucket ({_input_file_path}) ...')
     _df: pd.DataFrame = DataImporter(file_path=_input_file_path, as_data_frame=True, use_dask=False, sep=',', cloud='aws').file()
+    _df[TARGET_FEATURE] = _df[TARGET_FEATURE].astype(float)
     _predictors: List[str] = ['Total Volume', '4046', '4225', '4770', 'Total Bags', 'Small Bags', 'Large Bags', 'XLarge Bags']
     _transformation: dict = dict(one_hot={})
     print('Generate one-hot encoded features ...')
