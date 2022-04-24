@@ -25,8 +25,8 @@ def main():
     _input_file_path: str = os.path.join(S3_INPUT_BUCKET, TRAINING_FILE_NAME)
     print(f'Load data set from S3 bucket ({_input_file_path}) ...')
     _df: pd.DataFrame = DataImporter(file_path=_input_file_path, as_data_frame=True, use_dask=False, sep=',', cloud='aws').file()
-    _predictors: List[str] = []
-    _transformation: dict(one_hot={})
+    _predictors: List[str] = ['Total Volume', '4046', '4225', '4770', 'Total Bags', 'Small Bags', 'Large Bags', 'XLarge Bags']
+    _transformation: dict = dict(one_hot={})
     print('Generate one-hot encoded features ...')
     for feature in ['type', 'year', 'region']:
         _transformation['one_hot'].update({feature: []})
@@ -42,7 +42,6 @@ def main():
         _dummies = _dummies.loc[:, ~_dummies.columns.duplicated()]
         _predictors.extend(_dummies.columns.tolist())
         _transformation['one_hot'][feature].extend(_dummies.columns.tolist())
-    _predictors.extend(['Total Volume', '4046', '4225', '4770', 'Total Bags', 'Small Bags', 'Large Bags', 'XLarge Bags'])
     _processor_file_path: str = os.path.join(S3_OUTPUT_BUCKET, S3_PROCESSOR_FOLDER, PROCESSOR_FILE_NAME)
     print(f'Save processor file to S3 bucket ({_processor_file_path}) ...')
     _processor: dict = dict(target_feature=TARGET_FEATURE, predictors=_predictors, one_hot=_transformation.get('one_hot'))
