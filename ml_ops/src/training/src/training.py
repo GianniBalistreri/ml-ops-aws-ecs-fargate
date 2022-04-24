@@ -42,6 +42,7 @@ def main():
         _dummies = _dummies.loc[:, ~_dummies.columns.duplicated()]
         _predictors.extend(_dummies.columns.tolist())
         _transformation['one_hot'][feature].extend(_dummies.columns.tolist())
+        _df = pd.concat(objs=[_df, _dummies], axis=1)
     _processor_file_path: str = os.path.join(S3_OUTPUT_BUCKET, S3_PROCESSOR_FOLDER, PROCESSOR_FILE_NAME)
     print(f'Save processor file to S3 bucket ({_processor_file_path}) ...')
     _processor: dict = dict(target_feature=TARGET_FEATURE, predictors=_predictors, one_hot=_transformation.get('one_hot'))
@@ -51,7 +52,7 @@ def main():
         json.dump(obj=_processor, fp=file, ensure_ascii=False)
     _aws_s3_client.put_object(Body=_buffer.getvalue(), Bucket=S3_OUTPUT_BUCKET, Key=f'/{S3_PROCESSOR_FOLDER}/{PROCESSOR_FILE_NAME}')
     print('Start modeling using evolutionary algorithm ...')
-    _ga: GeneticAlgorithm = GeneticAlgorithm(mode='model', feature_engineer=_feature_engineer, output_file_path=S3_OUTPUT_BUCKET)
+    _ga: GeneticAlgorithm = GeneticAlgorithm(mode='model', target=TARGET_FEATURE, features=_predictors, df=_df, max_generations=2, pop_size=10, cloud='aws', output_file_path=S3_OUTPUT_BUCKET)
     _ga.optimize()
     print('Finished modeling')
 
