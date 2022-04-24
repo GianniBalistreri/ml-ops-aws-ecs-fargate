@@ -49,11 +49,11 @@ def main():
     _processor: dict = dict(target_feature=TARGET_FEATURE, predictors=_predictors, one_hot=_transformation.get('one_hot'))
     _aws_s3_client = boto3.client('s3', region_name=REGION)
     _buffer: io.BytesIO = io.BytesIO()
-    with open(_processor_file_path, 'w', encoding='utf-8') as file:
+    with open(PROCESSOR_FILE_NAME, 'w', encoding='utf-8') as file:
         json.dump(obj=_processor, fp=file, ensure_ascii=False)
     _aws_s3_client.put_object(Body=_buffer.getvalue(), Bucket=S3_OUTPUT_BUCKET, Key=f'/{S3_PROCESSOR_FOLDER}/{PROCESSOR_FILE_NAME}')
     print('Start modeling using evolutionary algorithm ...')
-    _ga: GeneticAlgorithm = GeneticAlgorithm(mode='model', target=TARGET_FEATURE, features=_predictors, df=_df, max_generations=2, pop_size=10, cloud='aws', output_file_path=S3_OUTPUT_BUCKET)
+    _ga: GeneticAlgorithm = GeneticAlgorithm(mode='model', target=TARGET_FEATURE, features=_predictors, df=_df, max_generations=2, pop_size=10, cloud='aws', verbose=True, output_file_path=S3_OUTPUT_BUCKET)
     _ga.optimize()
     print('Finished modeling')
 
