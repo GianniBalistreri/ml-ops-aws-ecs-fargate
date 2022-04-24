@@ -5,8 +5,10 @@ from easyexplore.data_import_export import DataExporter, DataImporter
 from flask import Flask, request
 from typing import Tuple
 
+import boto3
 import os
 import pandas as pd
+import pickle
 
 
 S3_INPUT_BUCKET: str = 's3://gfb-ml-ops-data-for-prediction'
@@ -17,7 +19,8 @@ OUTPUT_FILE_NAME: str = 'prediction.csv'
 MODEL_NAME: str = 'model.p'
 S3_PROCESSOR_FOLDER: str = 'processing'
 PREPROCESSING_FILE_NAME: str = 'processor.json'
-MODEL = DataImporter(file_path=os.path.join(S3_MODEL_BUCKET, MODEL_NAME), as_data_frame=False, cloud='aws', bucket_name=S3_MODEL_BUCKET.split('//')[1]).file()
+S3_RESOURCE = boto3.resource('s3')
+MODEL = pickle.loads(S3_RESOURCE.Bucket(S3_MODEL_BUCKET.split('//')[1]).Object(MODEL_NAME).get()['Body'].read())
 
 app = Flask(__name__)
 
