@@ -70,7 +70,7 @@ def inference() -> Tuple[dict, int]:
     return _response, 200
 
 @app.route('/inference_s3', methods=['GET', 'POST'])
-def inference() -> int:
+def inference_s3() -> int:
     """
     Generate inference from pre-trained model using data set from s3 bucket
     """
