@@ -16,7 +16,7 @@ INPUT_FILE_NAME: str = 'data_for_prediction.csv'
 OUTPUT_FILE_NAME: str = 'prediction.csv'
 MODEL_NAME: str = 'model.p'
 PREPROCESSING_FILE_NAME: str = 'processor.json'
-MODEL = DataImporter(file_path=os.path.join(S3_MODEL_BUCKET, MODEL_NAME), as_data_frame=False, cloud='aws').file()
+MODEL = DataImporter(file_path=os.path.join(S3_MODEL_BUCKET, MODEL_NAME), as_data_frame=False, cloud='aws', bucket_name=S3_MODEL_BUCKET.split('//')[1]).file()
 
 app = Flask(__name__)
 
@@ -80,7 +80,8 @@ def inference() -> int:
     _df['prediction'] = _predictions
     _prediction_file_path: str = os.path.join(S3_OUTPUT_BUCKET, OUTPUT_FILE_NAME)
     print(f'Save prediction to S3 bucket ({_prediction_file_path}) ...')
-    DataExporter(obj=_df, file_path=_prediction_file_path, sep=',', cloud='aws').file()
+    _s3_bucket_name: str = S3_OUTPUT_BUCKET.split('//')[1]
+    DataExporter(obj=_df, file_path=_prediction_file_path, sep=',', cloud='aws', bucket_name=_s3_bucket_name).file()
     return 200
 
 if __name__ == '__main__':
