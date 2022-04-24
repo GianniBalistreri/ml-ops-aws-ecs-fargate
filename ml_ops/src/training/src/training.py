@@ -55,7 +55,7 @@ def main():
     _s3_bucket_name: str = S3_OUTPUT_BUCKET.split('//')[1]
     _aws_s3_client.put_object(Body=_buffer.getvalue(), Bucket=_s3_bucket_name, Key=f'/{S3_PROCESSOR_FOLDER}/{PROCESSOR_FILE_NAME}')
     print('Start modeling using evolutionary algorithm ...')
-    _ga: GeneticAlgorithm = GeneticAlgorithm(mode='model', target=TARGET_FEATURE, features=_predictors, df=_df, max_generations=2, pop_size=10, cloud='aws', verbose=True, output_file_path=S3_OUTPUT_BUCKET)
+    _ga: GeneticAlgorithm = GeneticAlgorithm(mode='model', target=TARGET_FEATURE, features=_predictors, df=_df, models=['cat'], max_generations=2, pop_size=10, cloud='aws', verbose=True, mlflow_log=False, output_file_path=S3_OUTPUT_BUCKET)
     _ga.optimize()
     print('Finished modeling')
 
