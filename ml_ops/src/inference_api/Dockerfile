@@ -16,4 +16,4 @@ RUN poetry install --no-dev
 
 COPY /ml_ops/src/inference_api/src /src
 
-ENTRYPOINT [ "python", "inference.py" ]
+ENTRYPOINT [ "python", "inference_api.py" ]
