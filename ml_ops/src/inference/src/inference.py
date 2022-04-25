@@ -1,12 +1,8 @@
 """
 Generating inferences from pre-trained machine learning model
 """
-import json
-from easyexplore.data_import_export import DataExporter, DataImporter
-from typing import Tuple
-
 import boto3
-import io
+import json
 import os
 import pandas as pd
 import pickle
