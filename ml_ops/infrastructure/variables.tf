@@ -30,6 +30,12 @@ variable "ecr_name_inference" {
   default     = "inference"
 }
 
+variable "ecr_name_inference_api" {
+  description = "Name of the elastic container registry for inference_api image"
+  type        = string
+  default     = "inference_api"
+}
+
 variable "ecr_image_tag_mutability" {
   description = "Mutability image tag"
   type        = string
@@ -171,16 +177,10 @@ variable "az_count" {
   default     = "2"
 }
 
-variable "training_container_image" {
-  description = "Docker image to run in the ECS cluster to train ml model"
+variable "cluster_container_image" {
+  description = "Docker image to run in the ECS cluster"
   type        = string
-  default     = "training:latest"
-}
-
-variable "inference_container_image" {
-  description = "Docker image to run in the ECS cluster to generate inferences from pre-trained ml model"
-  type        = string
-  default     = "inference:latest"
+  default     = "ml:latest"
 }
 
 variable "ml_ops_port" {

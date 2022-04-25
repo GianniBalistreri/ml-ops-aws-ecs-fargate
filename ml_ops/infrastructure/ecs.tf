@@ -37,7 +37,8 @@ resource "aws_ecs_cluster" "ecs_fargate" {
   name = var.ecs_cluster_name
   depends_on = [
     aws_ecr_repository.training,
-    aws_ecr_repository.inference
+    aws_ecr_repository.inference,
+    aws_ecr_repository.inference_api
   ]
 }
 
@@ -51,7 +52,7 @@ resource "aws_ecs_task_definition" "ml" {
   container_definitions = jsonencode([
     {
       "name" : var.aws_ecs_task_definition_container_definition_name,
-      "image" : var.training_container_image,
+      "image" : var.cluster_container_image,
       "cpu" : var.fargate_cpu,
       "memory" : var.fargate_memory,
       "networkMode" : "awsvpc",
