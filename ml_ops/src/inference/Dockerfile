@@ -1,7 +1,5 @@
 FROM python:3.8
 
-EXPOSE 5000
-
 RUN mkdir /src
 COPY /ml_ops/src/inference/pyproject.toml /src
 
