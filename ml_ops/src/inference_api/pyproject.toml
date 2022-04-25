@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "inference"
+name = "inference_api"
 version = "0.1.0"
-description = "Generate inference from pre-trained machine learning model"
+description = "Generate inference from pre-trained machine learning model using flask app"
 authors = ["gianni <gbalistreri762@gmail.com>"]
 
 [tool.poetry.dependencies]
