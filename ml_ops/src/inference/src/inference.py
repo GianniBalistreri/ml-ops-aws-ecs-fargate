@@ -1,10 +1,12 @@
 """
 Generating inferences from pre-trained machine learning model
 """
+import json
 from easyexplore.data_import_export import DataExporter, DataImporter
 from typing import Tuple
 
 import boto3
+import io
 import os
 import pandas as pd
 import pickle
@@ -46,11 +48,10 @@ def main():
     """
     _s3_resource = boto3.resource('s3')
     _model = pickle.loads(_s3_resource.Bucket(S3_MODEL_BUCKET.split('//')[1]).Object(MODEL_NAME).get()['Body'].read())
-    _s3_model_bucket_name: str = S3_MODEL_BUCKET.split('//')[1]
-    _processor_file_path: str = os.path.join(S3_MODEL_BUCKET, S3_PROCESSOR_FOLDER, PREPROCESSING_FILE_NAME)
+    _processor_file_path: str = os.path.join(S3_PROCESSOR_FOLDER, PREPROCESSING_FILE_NAME)
     print(f'Load processor file from S3 bucket ({_processor_file_path})')
-    _processor: dict = DataImporter(file_path=_processor_file_path, as_data_frame=False, cloud='aws', bucket_name=_s3_model_bucket_name).file()
-    _df_raw: pd.DataFrame = DataImporter(file_path=os.path.join(S3_INPUT_BUCKET, INPUT_FILE_NAME), use_dask=False, sep=',', cloud='aws', bucket_name=S3_INPUT_BUCKET.split('//')[1]).file()
+    _processor: dict = json.loads(_s3_resource.Bucket(S3_MODEL_BUCKET.split('//')[1]).Object(_processor_file_path).get()['Body'].read())
+    _df_raw: pd.DataFrame = pd.read_csv(io.StringIO(_s3_resource.Bucket(S3_INPUT_BUCKET.split('//')[1]).Object(INPUT_FILE_NAME).get()['Body'].read()))
     print('Start pre-processing ...')
     _df = _pre_processing(df=_df_raw, preprocessing_template=_processor)
     print('Generate prediction ...')
@@ -58,8 +59,7 @@ def main():
     _df['prediction'] = _predictions
     _prediction_file_path: str = os.path.join(S3_OUTPUT_BUCKET, OUTPUT_FILE_NAME)
     print(f'Save prediction to S3 bucket ({_prediction_file_path}) ...')
-    _s3_output_bucket_name: str = S3_OUTPUT_BUCKET.split('//')[1]
-    DataExporter(obj=_df, file_path=_prediction_file_path, sep=',', cloud='aws', bucket_name=_s3_output_bucket_name).file()
+    _df.to_csv(path_or_buf=_prediction_file_path, index=False, sep=',')
 
 if __name__ == '__main__':
     main()
