@@ -50,8 +50,7 @@ def main():
     _processor: dict = dict(target_feature=TARGET_FEATURE, predictors=_predictors, one_hot=_transformation.get('one_hot'))
     _aws_s3_client = boto3.client('s3', region_name=REGION)
     _buffer: io.BytesIO = io.BytesIO()
-    with open(PROCESSOR_FILE_NAME, 'w', encoding='utf-8') as file:
-        json.dump(obj=_processor, fp=file, ensure_ascii=False)
+    json.dump(obj=_processor, fp=_buffer, ensure_ascii=False)
     _s3_bucket_name: str = S3_OUTPUT_BUCKET.split('//')[1]
     _aws_s3_client.put_object(Body=_buffer.getvalue(), Bucket=_s3_bucket_name, Key=f'{S3_PROCESSOR_FOLDER}/{PROCESSOR_FILE_NAME}')
     print('Start modeling using evolutionary algorithm ...')
