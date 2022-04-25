@@ -33,7 +33,7 @@ def main():
     for feature in ['type', 'year', 'region']:
         _transformation['one_hot'].update({feature: []})
         _dummies: pd.DataFrame = pd.get_dummies(data=_df[feature],
-                                                prefix=None,
+                                                prefix=feature,
                                                 prefix_sep='_',
                                                 dummy_na=True,
                                                 columns=None,
