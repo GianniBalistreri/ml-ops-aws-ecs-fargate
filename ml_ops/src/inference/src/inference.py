@@ -51,7 +51,7 @@ def main():
     _processor_file_path: str = os.path.join(S3_PROCESSOR_FOLDER, PREPROCESSING_FILE_NAME)
     print(f'Load processor file from S3 bucket ({_processor_file_path})')
     _processor: dict = json.loads(_s3_resource.Bucket(S3_MODEL_BUCKET.split('//')[1]).Object(_processor_file_path).get()['Body'].read())
-    _df_raw: pd.DataFrame = pd.read_csv(io.StringIO(_s3_resource.Bucket(S3_INPUT_BUCKET.split('//')[1]).Object(INPUT_FILE_NAME).get()['Body'].read()))
+    _df_raw: pd.DataFrame = pd.read_csv(os.path.join(S3_INPUT_BUCKET, INPUT_FILE_NAME), sep=',')
     print('Start pre-processing ...')
     _df = _pre_processing(df=_df_raw, preprocessing_template=_processor)
     print('Generate prediction ...')
